@@ -1,0 +1,30 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 📋 Installer les dépendances
+        run: npm install
+      
+      - name: 🚀 Lancer l'application
+        run: npm run run
+      
+      - name: 🧪 Lancer les tests
+        run: npm test
