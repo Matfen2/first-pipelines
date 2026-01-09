@@ -7,8 +7,9 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
-    name: 🧪 Tests
+  # Job 1 : Analyse du code (Linter)
+  lint:
+    name: 🔍 Analyse du code
     runs-on: ubuntu-latest
     
     steps:
@@ -23,8 +24,65 @@ jobs:
       - name: 📋 Installer les dépendances
         run: npm install
       
+      - name: 🔍 Linter (ESLint)
+        run: npm run lint
+
+  # Job 2 : Analyse de sécurité
+  security:
+    name: 🛡️ Analyse sécurité
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 📋 Installer les dépendances
+        run: npm install
+      
+      - name: 🛡️ Audit de sécurité
+        run: npm audit --audit-level=moderate || true
+
+  # Job 3 : Tests
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    needs: [lint, security]
+    
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 📋 Installer les dépendances
+        run: npm install
+      
       - name: 🚀 Lancer l'application
-        run: npm run run
+        run: npm start
       
       - name: 🧪 Lancer les tests
         run: npm test
+
+  # Job 4 : Build Docker
+  build:
+    name: 🐳 Build Docker
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+      
+      - name: 🐳 Build image Docker
+        run: docker build -t first-pipelines:${{ github.sha }} .
+      
+      - name: ✅ Vérifier l'image
+        run: docker images | grep first-pipelines

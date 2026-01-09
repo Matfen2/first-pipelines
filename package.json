@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "run": "node index.js",
-    "test": "node test.js"
+    "start": "node index.js",
+    "test": "node test.js",
+    "lint": "eslint *.js",
+    "security": "npm audit --audit-level=moderate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0"
+  }
 }
